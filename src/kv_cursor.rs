@@ -27,7 +27,7 @@ use crate::UnQLite;
 /// #
 /// # #[cfg(feature = "enable-threads")]
 /// # fn main() {
-/// let unqlite = UnQLite::create_temp();
+/// let unqlite = UnQLite::create_temp().unwrap();
 /// let mut entry = unqlite.first();
 ///
 /// loop {
@@ -375,7 +375,7 @@ mod tests {
 
     #[test]
     fn test_kv_cursor() {
-        let unqlite = UnQLite::create_in_memory();
+        let unqlite = UnQLite::create_in_memory().unwrap();
         unqlite.kv_store("abc", "1").unwrap();
         unqlite.kv_store("cde", "3").unwrap();
         unqlite.kv_store("bcd", "2").unwrap();
@@ -410,7 +410,7 @@ mod tests {
 
     #[test]
     fn test_delete() {
-        let uq = UnQLite::create_temp();
+        let uq = UnQLite::create_temp().unwrap();
         uq.kv_store("abc", "1").unwrap();
         let mut entry = uq.first();
         loop {

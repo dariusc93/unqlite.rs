@@ -3,7 +3,7 @@ use unqlite::{UnQLite, KV, Cursor};
 fn main() {
     // The database memory is not handled by Rust, and the database is on-disk,
     // so `mut` is not neccessary.
-    let unqlite = UnQLite::create_temp();
+    let unqlite = UnQLite::create_temp().unwrap();
     // Use any type that can use as `[u8]`
     unqlite.kv_store("key", "a long length value").unwrap();
     unqlite.kv_store("abc", [1,2,3]).unwrap();

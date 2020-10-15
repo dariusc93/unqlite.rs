@@ -26,7 +26,7 @@ use crate::UnQLite;
 /// #
 /// # #[cfg(feature = "enable-threads")]
 /// # fn main() {
-/// let unqlite = UnQLite::create_temp()
+/// let unqlite = UnQLite::create_temp().unwrap()
 ///     .max_page_cache(4096u32)
 ///     .disable_auto_commit();
 /// println!("KV engine name: {}", unqlite.kv_name());
@@ -157,20 +157,20 @@ mod tests {
     use crate::UnQLite;
     #[test]
     fn max_page_cache() {
-        let unqlite = UnQLite::create_temp().max_page_cache(512000000);
+        let unqlite = UnQLite::create_temp().unwrap().max_page_cache(512000000);
         let kv_name = unqlite.kv_name();
         assert_eq!(kv_name, String::from("mem"));
         assert_eq!(unqlite.err_log(), None);
     }
     #[test]
     fn disable_auto_commit() {
-        let _ = UnQLite::create_temp()
+        let _ = UnQLite::create_temp().unwrap()
             .max_page_cache(4096u32)
             .disable_auto_commit();
     }
     #[test]
     #[should_panic]
     fn kv_engine_panic() {
-        let _ = UnQLite::create_temp().kv_engine("hash");
+        let _ = UnQLite::create_temp().unwrap().kv_engine("hash");
     }
 }

@@ -9,7 +9,7 @@ use crate::UnQLite;
 #[test]
 fn output_std() {
     // let db = UnQLite::create_in_memory();
-    let db = UnQLite::create("data.base");
+    let db = UnQLite::create("data.base").unwrap();
     let prog = "print '-- hello '; print 'world --\n';";
     db.compile(prog)
         .and_then(|mut vm| {
@@ -24,14 +24,14 @@ fn output_std() {
 #[test]
 #[ignore]
 fn dump_vm_instructions() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
     let prog = "print 'hello '; print 'world'..'!';";
     db.compile(prog).and_then(|vm| vm.dump()).unwrap();
 }
 
 #[test]
 fn output_channel() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
     let prog = "print 'hello';\
                 print 'world';";
 
@@ -69,7 +69,7 @@ fn output_channel() {
 
 #[test]
 fn output_extract() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
     let prog = "print 'hello '; print 'world';";
     db.compile(prog)
         .and_then(|mut vm| {
@@ -83,7 +83,7 @@ fn output_extract() {
 
 #[test]
 fn arguments() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
     let prog = "print $argv[0]..' '..$argv[1];";
     db.compile(prog)
         .and_then(|mut vm| {
@@ -98,7 +98,7 @@ fn arguments() {
 
 #[test]
 fn env_attributes() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
     let prog = "print $_ENV['_']..' '..$_ENV['name']..$_ENV['NAME'];";
     db.compile(prog)
         .and_then(|mut vm| {
@@ -116,7 +116,7 @@ fn env_attributes() {
 
 #[test]
 fn exec_result() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
 
     db.compile("print 'will return null';")
         .map(|mut vm| {
@@ -187,7 +187,7 @@ fn exec_result() {
 
 #[test]
 fn add_extract_variable() {
-    let db = UnQLite::create_in_memory();
+    let db = UnQLite::create_in_memory().unwrap();
     let prog = "$val1 = $in1;\
                 $val2 = $in2..'_mod';\
                 $val3 = {key1: $in3, key2: $in4};

@@ -199,7 +199,7 @@ mod tests {
 
     #[test]
     fn test_kv_store() {
-        let unqlite = UnQLite::create_temp();
+        let unqlite = UnQLite::create_temp().unwrap();
         let _ = unqlite.kv_store("abc", "123").unwrap();
         let vec = [1u8, 2u8, 3u8];
         let _ = unqlite.kv_store(&vec, "123").unwrap();
@@ -232,7 +232,7 @@ mod tests {
     #[test]
     #[should_panic]
     fn panic_kv_fetch_not_found() {
-        let unqlite = UnQLite::create_in_memory();
+        let unqlite = UnQLite::create_in_memory().unwrap();
         unqlite.kv_fetch(&vec![4, 5, 6]).unwrap();
     }
 }

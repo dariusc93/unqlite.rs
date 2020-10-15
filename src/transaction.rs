@@ -66,7 +66,7 @@ mod tests {
     use crate::UnQLite;
     #[test]
     fn transaction() {
-        let uq = UnQLite::create_temp().disable_auto_commit();
+        let uq = UnQLite::create_temp().unwrap().disable_auto_commit();
         uq.begin().expect("begin");
         uq.commit().expect("commit");
         uq.rollback().expect("rollback");

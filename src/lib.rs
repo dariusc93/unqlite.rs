@@ -38,7 +38,7 @@
 //! fn main() {
 //!     // The database memory is not handled by Rust, and the database is on-disk,
 //!     // so `mut` is not neccessary.
-//!     let unqlite = UnQLite::create_temp();
+//!     let unqlite = UnQLite::create_temp().unwrap();
 //!     // Use any type that can use as `[u8]`
 //!     unqlite.kv_store("key", "a long length value").unwrap();
 //!     unqlite.kv_store("abc", [1,2,3]).unwrap();
@@ -150,10 +150,6 @@ impl UnQLite {
     ///
     /// By default, the database is created in read-write mode.
     ///
-    /// ## Panics
-    ///
-    /// Will panic if failed in creating.
-    ///
     /// ## Example
     ///
     /// ```ignore
@@ -172,8 +168,8 @@ impl UnQLite {
     /// rc = unqlite_open(&pDb, ":mem:", UNQLITE_OPEN_MEM);
     /// ```
     #[inline]
-    pub fn create<P: AsRef<str>>(filename: P) -> UnQLite {
-        Self::open(filename, OpenMode::Create).unwrap()
+    pub fn create<P: AsRef<str>>(filename: P) -> Result<UnQLite> {
+        Self::open(filename, OpenMode::Create)
     }
 
     /// Create database in memory.
@@ -183,12 +179,8 @@ impl UnQLite {
     /// ```ignore
     /// let _ = UnQLite::create(":mem:");
     /// ```
-    /// ## Panics
-    ///
-    /// Will panic if failed in creating.
-    ///
     #[inline]
-    pub fn create_in_memory() -> UnQLite {
+    pub fn create_in_memory() -> Result<UnQLite> {
         Self::create(":mem:")
     }
 
@@ -197,18 +189,14 @@ impl UnQLite {
     /// This private database will be automatically deleted as soon as
     /// the database connection is closed.
     ///
-    /// ## Panics
-    ///
-    /// Will panic if failed in creating.
-    ///
     /// ## C
     ///
     /// ```c
     /// int rc = unqlite_open("test.db", UNQLITE_OPEN_TEMP_DB);
     /// ```
     #[inline]
-    pub fn create_temp() -> UnQLite {
-        Self::open("", OpenMode::TempDB).unwrap()
+    pub fn create_temp() -> Result<UnQLite> {
+        Self::open("", OpenMode::TempDB)
     }
 
     /// Obtain a read-only memory view of the whole database.
@@ -216,18 +204,14 @@ impl UnQLite {
     /// You will get significant performance improvements with this combination but your database
     /// is still read-only.
     ///
-    /// ## Panics
-    ///
-    /// Panic if open failed.
-    ///
     /// ## C
     ///
     /// ```c
     /// unqlite_open(&pDb, "test.db", UNQLITE_OPEN_MMAP | UNQLITE_OPEN_READONLY);
     /// ```
     #[inline]
-    pub fn open_mmap<P: AsRef<str>>(filename: P) -> UnQLite {
-        Self::open(filename, OpenMode::MMap).unwrap()
+    pub fn open_mmap<P: AsRef<str>>(filename: P) -> Result<UnQLite> {
+        Self::open(filename, OpenMode::MMap)
     }
 
     /// Open the database in a read-only mode.
@@ -237,17 +221,13 @@ impl UnQLite {
     ///
     /// Always prefer to use `open_mmap` for readonly in disk database.
     ///
-    /// ## Panics
-    ///
-    /// Panic too.
-    ///
     /// ## C
     /// ```c
     /// unqlite_open(&pDb, "test.db", UNQLITE_OPEN_READONLY);
     /// ```
     #[inline]
-    pub fn open_readonly<P: AsRef<str>>(filename: P) -> UnQLite {
-        Self::open(filename, OpenMode::ReadOnly).unwrap()
+    pub fn open_readonly<P: AsRef<str>>(filename: P) -> Result<UnQLite> {
+        Self::open(filename, OpenMode::ReadOnly)
     }
 
     fn close(&self) -> Result<()> {
@@ -296,17 +276,17 @@ mod tests_threadsafe {
 
     #[test]
     fn create_temp() {
-        let _ = UnQLite::create_temp();
+        let _ = UnQLite::create_temp().unwrap();
     }
 
     #[test]
     fn create_in_memory() {
-        let _ = UnQLite::create_in_memory();
+        let _ = UnQLite::create_in_memory().unwrap();
     }
 
     #[test]
     fn from_readonly_memory() {
-        let _ = UnQLite::open_readonly(":mem:");
+        let _ = UnQLite::open_readonly(":mem:").unwrap();
     }
 }
 
@@ -316,8 +296,8 @@ mod tests {
 
     #[test]
     fn open() {
-        let _ = UnQLite::create_temp();
-        let _ = UnQLite::create_in_memory();
-        let _ = UnQLite::open_readonly(":mem:");
+        let _ = UnQLite::create_temp().unwrap();
+        let _ = UnQLite::create_in_memory().unwrap();
+        let _ = UnQLite::open_readonly(":mem:").unwrap();
     }
 }

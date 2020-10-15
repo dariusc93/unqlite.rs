@@ -82,13 +82,13 @@ mod tests {
 
     #[test]
     fn test_random_string() {
-        let unqlite = UnQLite::create_in_memory();
+        let unqlite = UnQLite::create_in_memory().unwrap();
         let _ = unqlite.random_string(32);
     }
 
     #[test]
     fn test_random_num() {
-        let _ = UnQLite::create_in_memory().random_num();
+        let _ = UnQLite::create_in_memory().unwrap().random_num();
     }
 
     #[test]
